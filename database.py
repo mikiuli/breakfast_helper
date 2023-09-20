@@ -2,6 +2,13 @@ from getpass import getpass
 from mysql.connector import connect, Error
 from parser_1 import get_a_recipe
 
+from config import load_config
+
+config = load_config()
+DATABASE = config.db.database
+DB_USER = config.db.db_user
+DB_PASSWORD = config.db.db_password
+DB_HOST = config.db.db_host
 
 def connect_with_server():
     try:
@@ -142,6 +149,26 @@ SELECT * FROM breakfast"""
                     print(row)
     except Error as e:
         print(e)
+
+def get_a_breakfast():
+    try:
+        with connect(
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DATABASE
+        ) as connection:
+            get_a_breakfast_query = """
+            SELECT *
+            FROM breakfast
+            ORDER BY RAND()
+            LIMIT 1"""
+            with connection.cursor() as cursor:
+                cursor.execute(get_a_breakfast_query)
+                result = cursor.fetchall()
+                return result
+    except Error:
+        print(Error)
 
 # create_breakfast_table()
 # insert_into_table_breakfast(get_a_recipe)

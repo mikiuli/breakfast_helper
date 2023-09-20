@@ -1,5 +1,31 @@
-TOKEN: str = '6212239780:AAHQWReTnF_OLk_yRqQ7_pzdUt9E4wvUxFQ'
-USER: str = 'root'
-PASSWORD: str = "Y1013Jqkhkp"
-HOST: str = 'localhost'
-DATABASE: str = "breakfast_helper"
+from dataclasses import dataclass
+from environs import Env
+
+@dataclass
+class DatabaseConfig:
+    database: str
+    db_host: str
+    db_user: str
+    db_password: str
+
+@dataclass
+class TgBot:
+    token: str
+    admin_ids: list[int]
+
+@dataclass
+class Config:
+    tg_bot: TgBot
+    db: DatabaseConfig
+
+
+def load_config(path: str | None = None) -> Config:
+    env = Env()
+    env.read_env()
+
+    return Config(tg_bot=TgBot(token=env('TOKEN'),
+                               admin_ids=env('ADMIN_IDS')),
+                  db=DatabaseConfig(database=env('DATABASE'),
+                                    db_host=env('DB_HOST'),
+                                    db_user=env('DB_USER'),
+                                    db_password=env('DB_PASSWORD')))

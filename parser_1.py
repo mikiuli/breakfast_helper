@@ -5,7 +5,7 @@ from time import sleep
 
 # заголовки, которые описывают пользователя, что переходит по конкретному URL адресу,
 # ArithmeticError чтоб сайт не считал нас ботом
-headers = {
+HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
                   'AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/104.0.5112.124 Safari/537.36'
@@ -14,7 +14,7 @@ headers = {
 def get_dish_urls():
     for page in range(2, 6):
         page_url = f'https://1000.menu/catalog/na-zavtrak/{page}'
-        response = requests.get(page_url, headers=headers)
+        response = requests.get(page_url, headers=HEADERS)
         if response.status_code == 200:
             soup = BS(response.text, 'html.parser')
             dish_urls = soup.find_all('a', class_="h5")
@@ -28,7 +28,7 @@ def get_dish_urls():
 def get_a_recipe():
     for dish_url in get_dish_urls():
         sleep(0.1)
-        response = requests.get(dish_url, headers=headers)
+        response = requests.get(dish_url, headers=HEADERS)
         if response.status_code == 200:
             soup = BS(response.text, 'html.parser')
             name = soup.find('h1', itemprop="name").text
